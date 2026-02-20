@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Clima</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #e0f2fe;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #374151;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-si {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .btn-si.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-no {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .btn-no.active {
+            background: #10b981;
+            color: white;
+        }
+        .btn-calcular {
+            width: 100%;
+            padding: 15px;
+            background: #3b82f6;
+            color: white;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .btn-calcular:hover {
+            background: #2563eb;
+        }
+        .resultado {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        .resultado.show {
+            display: block;
+        }
+        .playa {
+            background: #06b6d4;
+        }
+        .casa {
+            background: #f97316;
+        }
+        .normal {
+            background: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☁️ Simulador de Clima</h1>
+        
+        <div class="form-group">
+            <label>Temperatura (°C)</label>
+            <input type="number" id="temperatura" placeholder="Ej: 25">
+        </div>
+        
+        <div class="form-group">
+            <label>¿Está lloviendo?</label>
+            <div class="buttons">
+                <button class="btn-si" onclick="seleccionar('si')">☂️ Sí</button>
+                <button class="btn-no" onclick="seleccionar('no')">☀️ No</button>
+            </div>
+        </div>
+        
+        <button class="btn-calcular" onclick="calcular()">Ver Recomendación</button>
+        
+        <div id="resultado" class="resultado"></div>
+    </div>
+    
+    <script>
+        let lloviendo = '';
+        
+        function seleccionar(opcion) {
+            lloviendo = opcion;
+            document.querySelectorAll('.btn-si, .btn-no').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (opcion === 'si') {
+                document.querySelector('.btn-si').classList.add('active');
+            } else {
+                document.querySelector('.btn-no').classList.add('active');
+            }
+        }
+        
+        function calcular() {
+            const temp = parseFloat(document.getElementById('temperatura').value);
+            const resultado = document.getElementById('resultado');
+            
+            if (isNaN(temp)) {
+                alert('Ingresa una temperatura válida');
+                return;
+            }
+            
+            if (!lloviendo) {
+                alert('Selecciona si está lloviendo');
+                return;
+            }
+            
+            const estaLloviendo = lloviendo === 'si';
+            let mensaje = '';
+            let clase = '';
+            
+            if (temp > 30 && !estaLloviendo) {
+                mensaje = '🌊 Ve a la playa';
+                clase = 'playa';
+            } else if (temp < 15 || estaLloviendo) {
+                mensaje = '🏠 Quédate en casa con una manta';
+                clase = 'casa';
+            } else {
+                mensaje = '☀️ Día normal, disfruta';
+                clase = 'normal';
+            }
+            
+            resultado.className = 'resultado ' + clase + ' show';
+            resultado.textContent = mensaje;
+        }
+    </script>
+</body>
+</html>

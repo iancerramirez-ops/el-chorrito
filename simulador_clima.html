@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Clima</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 50%, #c7d2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .icon-circle {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .btn-option {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-option.si {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-option.si.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-option.no {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-option.no.active {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-calculate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.5s ease-out;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.playa {
+            background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 100%);
+        }
+
+        .result.casa {
+            background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+        }
+
+        .result.normal {
+            background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+        }
+
+        .result-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .result-message {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .result-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon-container">
+                <div class="icon-circle">☁️</div>
+            </div>
+            <h1>Simulador de Clima</h1>
+            <p class="subtitle">Ingresa las condiciones climáticas</p>
+        </div>
+
+        <div class="form-group">
+            <label for="temperatura">Temperatura (°C)</label>
+            <input 
+                type="number" 
+                id="temperatura" 
+                placeholder="Ej: 25"
+                step="0.1"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>¿Está lloviendo?</label>
+            <div class="button-group">
+                <button class="btn-option si" onclick="seleccionarLluvia('si')">
+                    ☂️ Sí
+                </button>
+                <button class="btn-option no" onclick="seleccionarLluvia('no')">
+                    ☀️ No
+                </button>
+            </div>
+        </div>
+
+        <button class="btn-calculate" onclick="calcularRecomendacion()">
+            Ver Recomendación
+        </button>
+
+        <div id="resultado" class="result">
+            <div class="result-icon" id="icono"></div>
+            <div class="result-message" id="mensaje"></div>
+            <div class="result-info">
+                <p>Temperatura: <span id="temp-info"></span>°C</p>
+                <p>Lluvia: <span id="lluvia-info"></span></p>
+            </div>
+            <button class="btn-reset" onclick="reiniciar()">Nuevo Clima</button>
+        </div>
+    </div>
+
+    <script>
+        let lloviendoSeleccionado = '';
+
+        function seleccionarLluvia(opcion) {
+            lloviendoSeleccionado = opcion;
+            const botones = document.querySelectorAll('.btn-option');
+            botones.forEach(btn => btn.classList.remove('active'));
+            
+            if (opcion === 'si') {
+                document.querySelector('.btn-option.si').classList.add('active');
+            } else {
+                document.querySelector('.btn-option.no').classList.add('active');
+            }
+        }
+
+        function calcularRecomendacion() {
+            const temperaturaInput = document.getElementById('temperatura');
+            const temperatura = parseFloat(temperaturaInput.value);
+            const resultado = document.getElementById('resultado');
+            const icono = document.getElementById('icono');
+            const mensaje = document.getElementById('mensaje');
+            const tempInfo = document.getElementById('temp-info');
+            const lluviaInfo = document.getElementById('lluvia-info');
+
+            // Validaciones
+            if (isNaN(temperatura)) {
+                alert('Por favor, ingresa una temperatura válida');
+                return;
+            }
+
+            if (lloviendoSeleccionado === '') {
+                alert('Por favor, indica si está lloviendo');
+                return;
+            }
+
+            const estaLloviendo = lloviendoSeleccionado === 'si';
+
+            // Determinar recomendación
+            let tipoResultado = '';
+            let textoMensaje = '';
+            let emojiIcono = '';
+
+            if (temperatura > 30 && !estaLloviendo) {
+                tipoResultado = 'playa';
+                textoMensaje = 'Ve a la playa';
+                emojiIcono = '🌊';
+            } else if (temperatura < 15 || estaLloviendo) {
+                tipoResultado = 'casa';
+                textoMensaje = 'Quédate en casa con una manta';
+                emojiIcono = '🏠';
+            } else {
+                tipoResultado = 'normal';
+                textoMensaje = 'Día normal, disfruta';
+                emojiIcono = '☀️';
+            }
+
+            // Mostrar resultado
+            resultado.className = `result ${tipoResultado} show`;
+            icono.textContent = emojiIcono;
+            mensaje.textContent = textoMensaje;
+            tempInfo.textContent = temperatura;
+            lluviaInfo.textContent = estaLloviendo ? 'Sí' : 'No';
+        }
+
+        function reiniciar() {
+            document.getElementById('temperatura').value = '';
+            lloviendoSeleccionado = '';
+            document.querySelectorAll('.btn-option').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('resultado').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
